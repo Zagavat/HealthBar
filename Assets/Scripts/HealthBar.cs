@@ -7,18 +7,22 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class HealthBar : MonoBehaviour
 {
+    [SerializeField] private Hero _hero;
+
     private Image _healthBar;
-    private Hero _hero;
+    private Coroutine _drawInJob;
 
     private void Start()
     {
         _healthBar = GetComponent<Image>();
-        _hero = FindObjectOfType<Hero>();
     }
 
     public void ChangedValue()
     {
-        StartCoroutine(DrawBar(_hero.Health / _hero.MaxHealth));
+        if (_drawInJob != null)
+            StopCoroutine(_drawInJob);
+
+        _drawInJob = StartCoroutine(DrawBar(_hero.Health / _hero.MaxHealth));
     }
 
     IEnumerator DrawBar(float targetValue)

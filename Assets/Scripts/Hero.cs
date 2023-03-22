@@ -8,7 +8,6 @@ public class Hero : MonoBehaviour
     [SerializeField] private UnityEvent _dead;
     [SerializeField] private UnityEvent _healthChanged;
 
-    private float _deltaHealth;
     private bool isAlive = true;
 
     public float MaxHealth { get; private set; }
@@ -18,20 +17,13 @@ public class Hero : MonoBehaviour
     {
         MaxHealth = 100f;
         Health = MaxHealth;
-        _deltaHealth = 10f;
     }
 
-    public void ChangeHealth(bool isIncrease)
+    public void TakeDamage(float deltaHealth)
     {
         if (isAlive)
         {
-            if (isIncrease)
-                Health += _deltaHealth;
-            else
-                Health -= _deltaHealth;
-
-            if (Health > MaxHealth)
-                Health = MaxHealth;
+            Health -= deltaHealth;
 
             if (Health <= 0)
             {
@@ -39,6 +31,19 @@ public class Hero : MonoBehaviour
                 isAlive = false;
                 _dead.Invoke();
             }
+
+            _healthChanged.Invoke();
+        }
+    }
+
+    public void TakeHill(float deltaHealth)
+    {
+        if (isAlive)
+        {
+            Health += deltaHealth;
+
+            if (Health > MaxHealth)
+                Health = MaxHealth;
 
             _healthChanged.Invoke();
         }
